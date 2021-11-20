@@ -1,3 +1,9 @@
+.buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 30px);
+    column-gap: 0.5rem;
+    row-gap: 0.5rem;
+}
 .calculator-button {
-	font-size: 3.2rem;
+    font-size: 3.2rem;
 }

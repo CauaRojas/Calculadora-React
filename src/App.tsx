@@ -1,13 +1,17 @@
 import React from 'react';
 import CalcButton from './CalculatorButton';
+import Display from './Display';
 import './styles/App.css';
+
 
 
 
 function App() {
   return (
     <>
-    <div className="Buttons">
+    <main>
+    <Display/>
+    <div className="buttons">
     <CalcButton value="1"/>
     <CalcButton value="2"/>
     <CalcButton value="3"/>
@@ -19,6 +23,7 @@ function App() {
     <CalcButton value="9"/>
     <CalcButton value="0"/>
     </div>
+    </main>
     </>
   );
 }
