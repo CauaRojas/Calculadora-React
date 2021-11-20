@@ -13,7 +13,9 @@ function App() {
         );
     };
     const addCalculatorTextNumber = (text: string) => {
-        setCalculatorText(CalculatorText + " " + text);
+        if (lastLetterIsOperator())
+            setCalculatorText(CalculatorText + " " + text);
+        else setCalculatorText(CalculatorText + text);
     };
     const AddCalculatorTextOperation = (text: string) => {
         if (!lastLetterIsOperator() && CalculatorText !== "")
@@ -26,6 +28,11 @@ function App() {
                     text
                 )
             );
+    };
+    const RemoveCalculatorText = (e: string) => {
+        setCalculatorText(
+            CalculatorText.substring(0, CalculatorText.length - 2)
+        );
     };
 
     return (
@@ -57,7 +64,7 @@ function App() {
                         />
                         <CalcButton value="AC" Click={setCalculatorText} />
                         <CalcButton value="0" Click={addCalculatorTextNumber} />
-                        <CalcButton value="C" Click={setCalculatorText} />
+                        <CalcButton value="C" Click={RemoveCalculatorText} />
                         <CalcButton
                             value="/"
                             Click={AddCalculatorTextOperation}
