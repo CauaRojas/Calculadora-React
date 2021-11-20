@@ -1,30 +1,41 @@
-import React, { useState } from "react";
-import CalcButton from "./CalculatorButton";
-import Display from "./Display";
-import "./styles/App.css";
+/* eslint-disable no-useless-escape */
+import React, { useState } from 'react';
+import CalcButton from './CalculatorButton';
+import Display from './Display';
+import './styles/App.css';
 
 function App() {
-    const [calculatorText, setCalculatorText] = useState("");
+    const [calculatorText, setCalculatorText] = useState('');
 
     const lastLetterIsOperator = (): boolean => {
         const letter = calculatorText[calculatorText.length - 1];
         return (
-            letter === "+" || letter === "-" || letter === "/" || letter === "*"
+            letter === '+' ||
+            letter === '-' ||
+            letter === '/' ||
+            letter === '*' ||
+            letter === '^'
         );
     };
-    const hasOperator = (): boolean => {
-        // eslint-disable-next-line no-useless-escape
-        return calculatorText.search(/([+*\/-])/gm) > 0;
+
+    const hasOperator = (text: string): boolean => {
+        return calculatorText.search(/([\+\*\/\-\^])/gm) > 0;
     };
+
+    const hasLast2Numbers = (text: string): boolean => {
+        return text.search(/(\d{2})$/gm) > 0;
+    };
+
     const addCalculatorTextNumber = (text: string) => {
         if (lastLetterIsOperator())
-            setCalculatorText(calculatorText + " " + text);
+            setCalculatorText(calculatorText + ' ' + text);
         else setCalculatorText(calculatorText + text);
     };
+
     const AddCalculatorTextOperation = (text: string) => {
-        if (!lastLetterIsOperator() && calculatorText !== "")
-            setCalculatorText(calculatorText + " " + text);
-        else if (calculatorText === "") setCalculatorText("0 " + text);
+        if (!lastLetterIsOperator() && calculatorText !== '')
+            setCalculatorText(calculatorText + ' ' + text);
+        else if (calculatorText === '') setCalculatorText('0 ' + text);
         else
             setCalculatorText(
                 calculatorText.replace(
@@ -33,16 +44,74 @@ function App() {
                 )
             );
     };
+
+    const addCalculatorTextDot = (e: string) => {
+        let deconstructedText = calculatorText.split(' ');
+        if (lastLetterIsOperator() || calculatorText === '')
+            setCalculatorText(calculatorText + ' 0.');
+        else if (
+            deconstructedText[deconstructedText.length - 1].search(
+                /[{\.}]/gm
+            ) !== -1
+        )
+            return;
+        else setCalculatorText(calculatorText + '.');
+    };
+
     const RemoveCalculatorText = (e: string) => {
         setCalculatorText(
-            calculatorText.substring(0, calculatorText.length - 2)
+            calculatorText.substring(
+                0,
+                calculatorText.length -
+                    (lastLetterIsOperator() ||
+                    (hasOperator(calculatorText) &&
+                        !hasLast2Numbers(calculatorText))
+                        ? 2
+                        : 1)
+            )
         );
     };
+
     const Calculate = () => {
-        if (lastLetterIsOperator() || calculatorText === "" || !hasOperator()) {
-            alert("Por favor insira uma operação valida para calcular!");
+        if (
+            lastLetterIsOperator() ||
+            calculatorText === '' ||
+            !hasOperator(calculatorText)
+        ) {
+            alert('Por favor insira uma operação valida para calcular!');
             return;
         }
+        let deconstructedText = calculatorText.split(' ');
+        console.log(deconstructedText);
+        let result = parseFloat(deconstructedText[0]);
+        for (
+            let counter = 1;
+            counter <= Math.floor(deconstructedText.length / 2);
+            counter++
+        ) {
+            switch (deconstructedText[-1 + 2 * counter]) {
+                case '+':
+                    result += parseFloat(deconstructedText[2 * counter]);
+                    break;
+                case '-':
+                    result -= parseFloat(deconstructedText[2 * counter]);
+                    break;
+                case '*':
+                    result *= parseFloat(deconstructedText[2 * counter]);
+                    break;
+                case '/':
+                    result /= parseFloat(deconstructedText[2 * counter]);
+                    break;
+                case '^':
+                    result = Math.pow(
+                        result,
+                        parseFloat(deconstructedText[2 * counter])
+                    );
+                    break;
+            }
+            console.log(result);
+        }
+        setCalculatorText(result.toString());
     };
 
     return (
@@ -79,6 +148,13 @@ function App() {
                             value="/"
                             Click={AddCalculatorTextOperation}
                         />
+                        <br />
+                        <CalcButton value="." Click={addCalculatorTextDot} />
+                        <CalcButton
+                            value="^"
+                            Click={AddCalculatorTextOperation}
+                        />
+                        <br />
                     </div>
                     <CalcButton value="=" Click={Calculate} />
                 </section>
