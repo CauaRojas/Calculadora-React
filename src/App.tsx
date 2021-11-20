@@ -4,42 +4,52 @@ import Display from "./Display";
 import "./styles/App.css";
 
 function App() {
-    const [CalculatorText, setCalculatorText] = useState("");
+    const [calculatorText, setCalculatorText] = useState("");
 
     const lastLetterIsOperator = (): boolean => {
-        const letter = CalculatorText[CalculatorText.length - 1];
+        const letter = calculatorText[calculatorText.length - 1];
         return (
             letter === "+" || letter === "-" || letter === "/" || letter === "*"
         );
     };
+    const hasOperator = (): boolean => {
+        // eslint-disable-next-line no-useless-escape
+        return calculatorText.search(/([+*\/-])/gm) > 0;
+    };
     const addCalculatorTextNumber = (text: string) => {
         if (lastLetterIsOperator())
-            setCalculatorText(CalculatorText + " " + text);
-        else setCalculatorText(CalculatorText + text);
+            setCalculatorText(calculatorText + " " + text);
+        else setCalculatorText(calculatorText + text);
     };
     const AddCalculatorTextOperation = (text: string) => {
-        if (!lastLetterIsOperator() && CalculatorText !== "")
-            setCalculatorText(CalculatorText + " " + text);
-        else if (CalculatorText === "") setCalculatorText("0 " + text);
+        if (!lastLetterIsOperator() && calculatorText !== "")
+            setCalculatorText(calculatorText + " " + text);
+        else if (calculatorText === "") setCalculatorText("0 " + text);
         else
             setCalculatorText(
-                CalculatorText.replace(
-                    CalculatorText[CalculatorText.length - 1],
+                calculatorText.replace(
+                    calculatorText[calculatorText.length - 1],
                     text
                 )
             );
     };
     const RemoveCalculatorText = (e: string) => {
         setCalculatorText(
-            CalculatorText.substring(0, CalculatorText.length - 2)
+            calculatorText.substring(0, calculatorText.length - 2)
         );
+    };
+    const Calculate = () => {
+        if (lastLetterIsOperator() || calculatorText === "" || !hasOperator()) {
+            alert("Por favor insira uma operação valida para calcular!");
+            return;
+        }
     };
 
     return (
         <>
             <main>
                 <section>
-                    <Display text={CalculatorText} />
+                    <Display text={calculatorText} />
                     <div className="buttons">
                         <CalcButton value="1" Click={addCalculatorTextNumber} />
                         <CalcButton value="2" Click={addCalculatorTextNumber} />
@@ -70,6 +80,7 @@ function App() {
                             Click={AddCalculatorTextOperation}
                         />
                     </div>
+                    <CalcButton value="=" Click={Calculate} />
                 </section>
             </main>
         </>
