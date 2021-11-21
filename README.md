@@ -1,4 +1,4 @@
-# Uma Calculadora feita totalmente em React
+# Uma Calculadora feita por mim totalmente em React
 ## Projeto Usado para aprendizado pessoal
 
 Eu fiz essa projeto como uma forma de me familiarizar mais com react e com conceitos mais avançados de JS,
